@@ -1,0 +1,29 @@
+---
+- name: Install Miniconda, PHP Development, PostgreSQL, Apache, MariaDB
+  hosts: target_server
+  become: yes
+
+  tasks:
+    - name: Update apt packages
+      apt:
+        update_cache: yes
+
+    - name: Install required system packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - build-essential
+        - libpq-dev
+        - apache2
+        - mariadb-server
+        - php
+        - php-cli
+        - php-mbstring
+        - php-xml
+        - php-pgsql
+        - python3-pip # Required for Miniconda installation
+
+    - name: Download and install Miniconda
+      get_url:
+        url: ""
