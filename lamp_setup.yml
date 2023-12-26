@@ -1,0 +1,38 @@
+---
+- name: Install and configure LAMP stack
+  host: localhost
+  become: yes
+
+  tasks:
+   - name: Update apt cache
+     apt:
+      update_cache: yes
+
+  - name: Install Apache2
+    apt:
+     name: apache2
+     state: present
+
+  - name: Install PHP and required modules
+    apt:
+     name: "{{ item }}"
+     state: present
+    loop:
+     - php
+     - libaoache2-mod-php
+     - php-mysql
+
+  - name: Restart Apache2
+    service:
+     name: apache2
+     state: restarted
+
+  - name: Install MariaDB
+    apt:
+     name: mariadb-server
+     state: present
+
+  - name: Secure MariaDB Installation (set root password, removed anonymous users, etc.)
+    command: mysql_secure_installation
+    args:
+     creates: "/root/.my.cnf"
